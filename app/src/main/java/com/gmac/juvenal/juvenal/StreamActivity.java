@@ -2,7 +2,6 @@ package com.gmac.juvenal.juvenal;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,8 +23,7 @@ import java.util.regex.Pattern;
 
 public class StreamActivity extends AppCompatActivity implements RtspClient.Callback, Session.Callback, SurfaceHolder.Callback {
 
-    public final static String PREFS_NAME = "MyPrefsFile";
-    // log tag
+   // log tag
     public final static String TAG = MainActivity.class.getSimpleName();
 
     // surfaceview
@@ -42,10 +40,7 @@ public class StreamActivity extends AppCompatActivity implements RtspClient.Call
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
-        String[] savedPrefs = getSavedPrefs();
-
         setContentView(R.layout.activity_stream);
-
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surface);
 
@@ -215,20 +210,5 @@ public class StreamActivity extends AppCompatActivity implements RtspClient.Call
     @Override
     public void onBitrateUpdate(long bitrate) {
     }
-
-    private String[] getSavedPrefs() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String[] mySavedPrefs = new String[7];
-        mySavedPrefs[0] = prefs.getString("name", "");
-        mySavedPrefs[1] = prefs.getString("email", "");
-        mySavedPrefs[2] = prefs.getString("phone", "");
-        mySavedPrefs[3] = prefs.getString("address", "");
-        mySavedPrefs[4] = prefs.getString("city", "");
-        mySavedPrefs[5] = prefs.getString("zip", "");
-        mySavedPrefs[6] = prefs.getString("state", "");
-
-        return mySavedPrefs;
-    }
-
 
 }

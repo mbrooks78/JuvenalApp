@@ -1,5 +1,6 @@
 package com.gmac.juvenal.juvenal;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,13 +16,17 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    public final static String PREFS_NAME = "MyPrefsFile";
+    private String fileName = "UserData";
+    private String filePath = "/data/data/com.gmac.juvenal.juvenal/files/UserData";
+   // public final static String PREFS_NAME = "MyPrefsFile";
     private String[] states;
     private Spinner spinner;
     private SharedPreferences preferences;
@@ -36,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = getSharedPreferences(PREFS_NAME, 0);
-        String value = preferences.getString("unknown_key",null);
-
-        if (value == null) {
+        File file = new File(filePath);
+        if (file.exists()) {
+               Intent myIntent = new Intent(MainActivity.this, StreamActivity.class);
+               MainActivity.this.startActivity(myIntent);
+        } else {
             setContentView(R.layout.activity_main);
 
             states = getResources().getStringArray(R.array.states_list);
@@ -60,10 +66,6 @@ public class MainActivity extends AppCompatActivity {
                             .setAction("Action", null).show();
                 }
             });
-
-        } else {
-            Intent myIntent = new Intent(MainActivity.this, StreamActivity.class);
-            MainActivity.this.startActivity(myIntent);
         }
     }
 
@@ -119,15 +121,20 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("name", name);
-        editor.putString("email", email);
-        editor.putString("phone", phone);
-        editor.putString("address", address);
-        editor.putString("city", city);
-        editor.putString("zip", zip);
-        editor.putString("state", state);
-        editor.apply();
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+            outputStream.write(name.getBytes());
+            outputStream.write(email.getBytes());
+            outputStream.write(phone.getBytes());
+            outputStream.write(address.getBytes());
+            outputStream.write(city.getBytes());
+            outputStream.write(zip.getBytes());
+            outputStream.write(state.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Intent myIntent = new Intent(MainActivity.this, StreamActivity.class);
         MainActivity.this.startActivity(myIntent);
